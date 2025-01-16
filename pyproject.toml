@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "KOTEKBOT"
+version = "2.1"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+repository = "https://github.com/salko-ua/KOTEKBOT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^3.8.0"
+aiosqlite = "^0.20.0"
+alerts-in-ua = "^0.2.7"
+apykuma = "^1.2.0"
+cachetools = "^5.3.3"
+asyncache = "^0.3.1"
+translate = "^3.6.1"
+apscheduler = "^3.10.4"
+sentry-sdk = "^2.7.1"
+loguru = "^0.7.2"
+sqlalchemy = "^2.0.31"
+aiohttp = "^3.9.4"
+
+[tool.poetry.group.docker]
+optional = true
+
+[tool.poetry.group.docker.dependencies]
+dumb-init = "~1.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
