@@ -58,7 +58,7 @@ async def about_bot(query: types.CallbackQuery) -> None:
     about_bot_text = (
         f"🤖 БОТ ВПФК ПЕДКІТ\n"
         f"🆙 Версія : 2.1\n"
-        f"За всіма питаннями: @maximyuk\n"
+        f"За всіма питаннями: @maximyuk07\n"
         f"👨‍💻 Код написаний: <a href='https://t.me/salkooua'>Salo</a>\n"
         f"🎨 Дизайн ави: <a href='https://t.me/pupqwert'>Reloadddddd</a>\n\n"
         f"📅 Початок розробки : Січень 2023-го року\n\n"
