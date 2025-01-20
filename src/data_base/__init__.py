@@ -26,7 +26,7 @@ class Database(AddDB, DeleteDB, ExistDB, SelectDB, UpdateDB):
         await base.execute(
             """
             CREATE TABLE IF NOT EXISTS user(
-                user_id           INTEGER NOT NULL, -- ід користувача (int)
+                user_id           INTEGER NOT NULL UNIQUE, -- ід користувача (int)
                 first_name        TEXT,             -- Ім'я користувача (str)
                 last_name         TEXT,             -- Приз віще користувача (str)
                 username          TEXT,             -- нікнейм користувача @ (str)
@@ -52,7 +52,8 @@ class Database(AddDB, DeleteDB, ExistDB, SelectDB, UpdateDB):
                 user_id       INTEGER UNIQUE,
                 group_student TEXT,
                 send_news     BOOLEAN DEFAULT 1,
-                send_alert    BOOLEAN DEFAULT 1
+                send_alert    BOOLEAN DEFAULT 1,
+                theme_name    TEXT DEFAILT 'black'
             )
             """
         )

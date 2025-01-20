@@ -11,8 +11,14 @@ class SelectDB(BaseDBPart):
         counts = await self.cur.execute("SELECT COUNT(user_id) FROM student")
         return await get_number(counts)
 
+    async def list_of_all_user(self):
+        result = await self.cur.execute("SELECT `user_id` FROM user")
+        return await get_list(result)
+
     async def list_id_student_agreed_news(self):
-        result = await self.cur.execute("SELECT `user_id` FROM `student` WHERE send_news = ?", (1,))
+        result = await self.cur.execute(
+            "SELECT `user_id` FROM `student` WHERE send_news = ?", (1,)
+        )
         return await get_list(result)
 
     async def list_id_student_agreed_alert(self):
@@ -42,7 +48,7 @@ class SelectDB(BaseDBPart):
         )
         data = await get_all_in_list(data_photo)
 
-        if None in data or not data:
+        if None in data or not data or data[0] == "":
             return []
 
         return data[0], data[1]
@@ -54,7 +60,7 @@ class SelectDB(BaseDBPart):
 
         data = await get_all_in_list(data_photo)
 
-        if None in data or not data:
+        if None in data or not data or data[0] == "":
             return []
 
         return data[0], data[1]
@@ -65,12 +71,19 @@ class SelectDB(BaseDBPart):
         )
 
         data = await get_all_in_list(data_photo)
-        print(data)
         if None in data or not data:
             return []
 
         return data[0], data[1]
 
     async def user_show_data(self, user_id):
-        result = await self.cur.execute("SELECT * FROM user WHERE user_id = ?", (user_id,))
+        result = await self.cur.execute(
+            "SELECT * FROM user WHERE user_id = ?", (user_id,)
+        )
         return await get_all_in_list(result)
+
+    async def get_student_theme(self, user_id):
+        result = await self.cur.execute(
+            "SELECT theme_name FROM student WHERE user_id = ?", (user_id,)
+        )
+        return await get_text(result)
