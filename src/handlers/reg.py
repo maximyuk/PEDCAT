@@ -1,3 +1,4 @@
+import aiogram.types
 from aiogram import F, Router, types
 from aiogram.filters.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
@@ -45,9 +46,10 @@ async def reg(query: types.CallbackQuery, state: FSMContext) -> None:
 
     elif query.data == "Студент 👩‍🎓":
         await state.set_state(FSMReg.student_reg)
-        await query.message.edit_text(
+        message = await query.message.edit_text(
             "⬇️ Виберіть групу", reply_markup=await student_group_list_kb()
         )
+        await state.update_data(message=message)
 
 
 @router.message(FSMReg.password_reg)
@@ -70,7 +72,9 @@ async def reg_admin(message: types.Message, state: FSMContext) -> None:
 
     if not await db.admin_exists(message.from_user.id):
         await db.add_admin(user_id, username)
-        await message.answer(text="Реєстрація завершена ✅", reply_markup=start_admin_kb())
+        await message.answer(
+            text="Реєстрація завершена ✅", reply_markup=start_admin_kb()
+        )
         await state.clear()
         return
 
@@ -81,7 +85,8 @@ async def reg_admin(message: types.Message, state: FSMContext) -> None:
 @router.callback_query(FSMReg.student_reg)
 async def reg_student(query: types.CallbackQuery, state: FSMContext) -> None:
     db = await Database.setup()
-
+    data = await state.get_data()
+    message_id: aiogram.methods.edit_message_text.EditMessageText = data["message"]
     group_student = query.data
 
     await state.clear()
@@ -92,6 +97,19 @@ async def reg_student(query: types.CallbackQuery, state: FSMContext) -> None:
         await state.set_state(FSMReg.reply_reg)
         return
 
+    if not await db.student_group_exists(group_student):
+        await query.message.bot.delete_message(
+            chat_id=query.message.chat.id, message_id=message_id.message_id
+        )
+        await query.answer(
+            text=f"Групу {group_student} не знайдено",
+            show_alert=True,
+            reply_markup=start_student_kb(),
+        )
+        return
+
     await db.add_student(user_id=query.from_user.id, group_student=group_student)
-    await query.message.answer(text="✅ Реєстрація завершена ✅", reply_markup=start_student_kb())
+    await query.message.answer(
+        text="✅ Реєстрація завершена ✅", reply_markup=start_student_kb()
+    )
     await query.message.delete()

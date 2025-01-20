@@ -4,10 +4,11 @@ from aiogram import F, Router, types
 from aiogram.filters.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
-from src.keyboards import * 
+from src.keyboards import *
 from src.utils import menu
 from src.data_base import Database
 from src.handlers.menu import back_student
+from aiogram.types import URLInputFile
 
 router = Router()
 
@@ -27,14 +28,27 @@ async def view_coupes_student(query: types.CallbackQuery) -> None:
         await query.answer(text="Розкладу ще немає ☹️", show_alert=True)
         return
 
-    await query.message.delete()
-    await query.message.answer_photo(
-        photo=data_photo[0], caption=data_photo[1], reply_markup=student_back_kb() 
+    theme = await db.get_student_theme(query.from_user.id)
+    image = URLInputFile(
+        f"{data_photo[0]}".replace("{theme}", theme),
+        filename="name.png",
     )
+    await query.message.delete()
+    try:
+        await query.message.answer_photo(
+            photo=image, caption=data_photo[1], reply_markup=student_back_kb()
+        )
+    except:
+        await query.message.answer(
+            text="Розкладу ще немає ☹️",
+            show_alert=True,
+            reply_markup=await schedule_kb(query.from_user.id),
+        )
 
 
 # ===========================Переглянути розклад дзвінків============================
 @router.callback_query(F.data == "Розклад дзвінків ⌚️")
+@router.callback_query(F.data == "Розклад дзвінків ⌛️")
 async def view_calls_student(query: types.CallbackQuery) -> None:
     db = await Database.setup()
 
@@ -46,7 +60,7 @@ async def view_calls_student(query: types.CallbackQuery) -> None:
 
     await query.message.delete()
     await query.message.answer_photo(
-        photo=data_photo[0], caption=data_photo[1], reply_markup=student_back_kb() 
+        photo=data_photo[0], caption=data_photo[1], reply_markup=student_back_kb()
     )
 
 
@@ -59,10 +73,11 @@ async def delete_user_student(message: types.Message) -> None:
         return
 
     await db.delete_student(message.from_user.id)
-    await message.answer(text="Тепер ви не студент ✅", reply_markup=start_admin_kb()) 
+    await message.answer(text="Тепер ви не студент ✅", reply_markup=start_all_kb())
 
 
 # =========================== Дріб ===========================
+@router.callback_query(F.data == "Ч/З тиждень ✒️")
 @router.callback_query(F.data == "Ч/З тиждень ✏️")
 async def fraction_student(query: types.CallbackQuery) -> None:
     delta = datetime.timedelta(hours=2, minutes=0)
@@ -82,7 +97,9 @@ async def fraction_student(query: types.CallbackQuery) -> None:
 async def schedule_student(query: types.CallbackQuery, state: FSMContext) -> None:
     await state.set_state(FSMStudent.name_group)
     await query.message.delete()
-    await query.message.answer(text="Виберіть групу", reply_markup=await student_group_list_kb())
+    await query.message.answer(
+        text="Виберіть групу", reply_markup=await student_group_list_kb()
+    )
 
 
 @router.callback_query(FSMStudent.name_group)
@@ -102,10 +119,23 @@ async def schedule_student1(query: types.CallbackQuery, state: FSMContext) -> No
         await state.clear()
         return
 
-    await query.message.delete()
-    await query.message.answer_photo(
-        photo=data_photo[0], caption=data_photo[1], reply_markup=student_back_kb()
+    theme = await db.get_student_theme(query.from_user.id)
+
+    image = URLInputFile(
+        f"{data_photo[0]}".replace("{theme}", theme),
+        filename=f"{query.data}.png",
     )
+    await query.message.delete()
+    try:
+        await query.message.answer_photo(
+            photo=image, caption=data_photo[1], reply_markup=student_back_kb()
+        )
+    except:
+        await query.message.answer(
+            text="Розкладу ще немає ☹️",
+            show_alert=True,
+            reply_markup=await schedule_kb(query.from_user.id),
+        )
 
 
 @router.message()
