@@ -3,6 +3,13 @@ from aiogram import F, Router, types
 from src.keyboards import *
 from src.utils import check_who, choose_random_photo, get_about_me
 
+import os
+import random
+from aiogram import types
+from aiogram.types import InputFile
+
+
+
 router = Router()
 
 
@@ -111,18 +118,30 @@ async def time_work(query: types.CallbackQuery) -> None:
     await query.message.edit_reply_markup(reply_markup=other_back_kb())
 
 
-@router.callback_query(F.data == "Фото кота 🖼")
-async def send_random_cat_photo(query: types.CallbackQuery) -> None:
-    await query.message.delete()
+# @router.callback_query(F.data == "Фото кота 🖼")
+# async def view_random_animal_photo(query: types.CallbackQuery):
+#     db = await Database.setup()  
 
-    try:
-        photo_path = await choose_random_photo()
-        file_path = types.FSInputFile(photo_path)
-        await query.message.answer_photo(file_path, reply_markup=other_back_kb())
-    except Exception:
-        await query.message.answer(
-            text="Фото кота ще не додано 😿", reply_markup=other_back_kb()
-        )
+#     # Отримуємо випадкове фото тваринки
+#     animal_photo_data = await db.get_random_animal_photo()
+
+#     if not animal_photo_data:
+#         await query.answer(text="Немає фото тваринок в базі ☹️", show_alert=True)
+#         return
+
+#     # Витягуємо фото і підпис
+#     photo_url = animal_photo_data[0]  # ID фото
+#     caption = animal_photo_data[1]    # Підпис до фото
+
+#     # Відправляємо фото з підписом
+#     await query.message.delete()
+#     await query.message.answer_photo(
+#         photo=photo_url, caption=caption, reply_markup=other_back_kb()
+#     )
+
+        
+
+
 
 
 @router.callback_query(F.data == "Донат 🫡")

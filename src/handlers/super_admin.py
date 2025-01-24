@@ -21,31 +21,37 @@ class FSMSuperAdminPanel(StatesGroup):
 
 
 @router.callback_query(F.data == "Оновити 📅")
-async def update_schedules(query: types.CallbackQuery) -> None:
-    if not await is_super_admin(query):
-        return
-
-    db = await Database.setup()
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://schedule.salko-ua.de/") as resp:
-            schedules_list = await resp.text()
-
-    schedules_list = list(map(lambda x: x.replace("-", ""), schedules_list.split(" ")))
-    schedules_list.remove("")
-    group_names = await db.student_group_list()
-    for group in group_names:
-        await db.delete_student_group(group)
-
-    for group in schedules_list:
-        await db.add_student_group(
-            student_group=group[:-4],
-            photo=f"https://schedule.salko-ua.de/{{theme}}/{group[:-4]}.png",
-            date=f"Змінено: {get_current_date()}",
-        )
-
-    await query.answer(
-        "Розклад автоматично оновлено з сайту schedule.salko-ua.de ✅", show_alert=True
+async def add_or_change_schedule1(query: types.CallbackQuery, state: FSMContext):
+    await query.message.edit_text(
+        "Виберіть групу зі списку ⬇️", reply_markup=await group_selection_student_kb()
     )
+    await state.set_state(FSMSuperAdminPanel.add_or_change_schedule_name)
+    
+
+@router.callback_query(FSMSuperAdminPanel.add_or_change_schedule_name)
+async def add_or_change_schedule_get_name_group(
+    query: types.CallbackQuery, state: FSMContext
+):
+    await query.message.edit_text(
+        "Надішліть фото 🖼\nЗ увімкнутим стисненням та назвою групи у описі",
+        reply_markup=None,
+    )
+    await state.set_state(FSMSuperAdminPanel.add_or_change_schedule_photo)
+    await state.update_data(name_group=query.data, message=query.message)
+
+
+@router.message(F.photo, FSMSuperAdminPanel.add_or_change_schedule_photo)
+async def add_or_change_schedule2(message: types.Message, state: FSMContext):
+    db = await Database.setup()
+    date = f"Змінено: {get_current_date()}"
+    data = (await state.get_data())["name_group"]
+    
+
+    await message.answer("Фото групи змінено ✅", reply_markup=super_admin_kb())
+    await clear_all(message, state)
+
+    await db.student_group_photo_update(data, message.photo[0].file_id, date)
+
 
 
 @router.message(F.text.startswith("sql "))
@@ -161,3 +167,21 @@ async def delete_student2(query: types.CallbackQuery, state: FSMContext):
         f"Група {group_name} видалена ✅", reply_markup=super_admin_back_kb()
     )
     await state.clear()
+
+
+
+# @router.callback_query(F.data == "Додати фото тваринки")
+# async def add_animal_photo(message: types.Message):
+#     db = await Database.setup()
+
+#     # Отримуємо фото і підпис від користувача
+#     photo = message.photo[-1].file_id  # Отримуємо файл фото (найкращу якість)
+#     caption = message.caption if message.caption else "Фото тваринки"
+#     name_photo = caption  # Можна взяти з підпису чи інше поле для назви
+#     date_photo = get_current_date()  # Задайте поточну дату, якщо потрібно
+    
+#     # Додаємо фото тваринки в базу даних
+#     await db.add_animal_photo(name_photo, photo, date_photo)
+
+#     # Відповідаємо користувачу
+#     await message.answer("Фото тваринки додано в базу ✅", reply_markup=admin_kb())

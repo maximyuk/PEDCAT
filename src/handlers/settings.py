@@ -38,28 +38,6 @@ async def settings(message: types.Message) -> None:
     )
 
 
-@router.callback_query(F.data == "change_schedule_theme")
-async def change_schedule_theme(query: types.CallbackQuery) -> None:
-    await query.message.edit_text("Виберіть інший колір теми")
-    await query.message.edit_reply_markup(
-        reply_markup=await theme_colors(query.from_user.id)
-    )
-
-
-@router.callback_query(F.data.startswith("theme"))
-async def change_schedule_theme1(query: types.CallbackQuery):
-    if query.data.endswith("✅"):
-        await query.answer("У вас вже ця тема", show_alert=True)
-        return
-
-    db = await Database.setup()
-    theme_name = query.data[6:]
-    print(theme_name)
-    await db.update_student_theme(user_id=query.from_user.id, theme_name=theme_name)
-    await query.message.edit_reply_markup(
-        reply_markup=await theme_colors(query.from_user.id)
-    )
-
 
 @router.callback_query(F.data == "change_student_group")
 async def change_student_group(query: types.CallbackQuery, state: FSMContext) -> None:
