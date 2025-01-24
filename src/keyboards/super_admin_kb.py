@@ -14,6 +14,7 @@ def super_admin_kb() -> InlineKeyboardMarkup:
         "Оновити 📅",
         "Групи 👥",
         "Сховати ❌",
+        "Додати фото тваринки",
     ]
 
     for button in keyboard:

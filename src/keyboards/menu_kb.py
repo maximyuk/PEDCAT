@@ -56,7 +56,7 @@ def other_kb() -> InlineKeyboardMarkup:
         "Статистика 🧮",
         "Допомога 🛠",
         "Час роботи 📅",
-        "Фото кота 🖼",
+        # "Фото кота 🖼",
         "Сховати ❌",
         "Донат 🫡",
     ]
@@ -112,3 +112,20 @@ async def schedule_kb(user_id: int) -> InlineKeyboardMarkup:
             builder.add(InlineKeyboardButton(text=button, callback_data=button))
 
         return builder.adjust(2).as_markup(resize_keyboard=True)
+
+def animals_kb() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+
+    keyboard = [
+        "Сховати ❌",
+        "⬅️ Назад",
+    ]
+
+    for button in keyboard:
+        builder.add(InlineKeyboardButton(text=button, callback_data=button))
+
+    return builder.adjust(2).as_markup(resize_keyboard=True)
+
+
+
+
