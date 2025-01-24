@@ -30,10 +30,10 @@ class AddDB(BaseDBPart):
         )
         return await self.base.commit()
 
-    async def add_student_group(self, student_group, photo, date):
+    async def add_student_group(self, student_group):
         await self.cur.execute(
-            "INSERT INTO `student_group` (`name_group`, `photo`, `date`) VALUES (?,?,?)",
-            (student_group, photo, date),
+            "INSERT INTO `student_group` (`name_group`) VALUES (?)",
+            (student_group,),
         )
         return await self.base.commit()
 

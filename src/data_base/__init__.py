@@ -67,6 +67,7 @@ class Database(AddDB, DeleteDB, ExistDB, SelectDB, UpdateDB):
             )
             """
         )
+
         await base.execute(
             """
             CREATE TABLE IF NOT EXISTS voting (

@@ -37,6 +37,7 @@ class SelectDB(BaseDBPart):
         result = await self.cur.execute("SELECT `name_group` FROM `student_group`")
         return sorted(await get_list(result))
 
+
     async def see_schedule_student(self, user_id):
         groups = await self.cur.execute(
             "SELECT `group_student` FROM `student` WHERE `user_id` = ?", (user_id,)
@@ -48,10 +49,12 @@ class SelectDB(BaseDBPart):
         )
         data = await get_all_in_list(data_photo)
 
-        if None in data or not data or data[0] == "":
+        if None in data or not data:
             return []
 
         return data[0], data[1]
+
+
 
     async def see_schedule_for_group(self, name_group):
         data_photo = await self.cur.execute(
@@ -60,7 +63,7 @@ class SelectDB(BaseDBPart):
 
         data = await get_all_in_list(data_photo)
 
-        if None in data or not data or data[0] == "":
+        if None in data or not data:
             return []
 
         return data[0], data[1]
@@ -87,3 +90,19 @@ class SelectDB(BaseDBPart):
             "SELECT theme_name FROM student WHERE user_id = ?", (user_id,)
         )
         return await get_text(result)
+
+
+    async def get_random_animal_photo(self):
+        # Вибірка випадкового фото тваринки
+        cursor = await self.cur.execute("SELECT photo, name_photo FROM photo ORDER BY RANDOM() LIMIT 1")
+        return await cursor.fetchone()
+
+
+    
+    async def add_animal_photo(self, name_photo, photo, date_photo):
+        await self.cur.execute(
+            "INSERT INTO photo (name_photo, photo, date_photo) VALUES (?,?,?)",
+            (name_photo, photo, date_photo),
+        )
+        return await self.base.commit()
+
