@@ -68,9 +68,8 @@ async def for_applicant(event: types.Message | types.CallbackQuery) -> None:
 async def about_bot(query: types.CallbackQuery) -> None:
     about_bot_text = (
         f"🤖 БОТ ВПФК ПЕДКІТ\n"
-        f"🆙 Версія : 3.0\n"
+        f"🆙 Версія : 3.0.1\n"
         f"👨‍💻 Code contributors: <a href='https://t.me/salkooua'>Salo</a> <a href='https://t.me/maximyuk07'>Bodya</a>\n"
-        f"🎨 Дизайн розкладів: <a href='https://t.me/MiradMary'>Alex? Stefan? Chris?</a>\n"
         f"🎨 Дизайн ави: <a href='https://t.me/pupqwert'>Reloadddddd</a>\n\n"
         f"📅 Початок розробки : Січень 2023-го року\n\n"
         f"Бот створено для спрощення\n"
@@ -102,7 +101,7 @@ async def about_me(query: types.CallbackQuery) -> None:
 
 @router.callback_query(F.data == "Допомога 🛠")
 async def get_help(query: types.CallbackQuery) -> None:
-    help_text = "Пишіть сюди : @botadmincat"
+    help_text = "Маєш навички програмування і хочеш допомогти? Пиши сюди: @maximyuk07 ."
     await query.message.edit_text(help_text)
     await query.message.edit_reply_markup(reply_markup=other_back_kb())
 
@@ -148,8 +147,8 @@ async def time_work(query: types.CallbackQuery) -> None:
 async def donate(query: types.CallbackQuery) -> None:
     text = (
         f"Підтримати проєкт можна за:\n\n"
-        f"💳 Monobank card : <code>5375411202975004</code>\n"
-        f"💳 Monobank url : <a href='https://send.monobank.ua/jar/5uzN1NcwYA'>monobank</a>\n\n"
+        f"💳 Monobank card : <code>4441 1144 1963 2409</code>\n"
+        # f"💳 Monobank url : <a href='https://send.monobank.ua/jar/5uzN1NcwYA'>monobank</a>\n\n"
         f"❤️ Повернись живим : <a href='https://savelife.in.ua/'>сайт</a>\n\n"
         f"Кошти підуть на оплату хостингу та покращення бота 🌚"
     )
@@ -168,7 +167,7 @@ async def introduction(query: types.CallbackQuery) -> None:
     await query.message.delete()
     await query.message.answer_photo(
         photo=file_path,
-        caption="<b><code>Інформація для вступника 2023 👩‍🎓</code></b>",
+        caption="<b><code>Інформація для вступника 2025 👩‍🎓</code></b>",
         reply_markup=url_introduction_kb(),
         parse_mode="HTML",
     )
