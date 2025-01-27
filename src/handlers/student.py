@@ -77,9 +77,9 @@ async def fraction_student(query: types.CallbackQuery) -> None:
     today = datetime.date(year=years, month=mouth, day=days)
     week_number = today.isocalendar()[1]
     if week_number % 2 == 0:
-        await query.answer(text="Цей тиждень - знаменник 🫡", show_alert=True)
+        await query.answer(text="Цей тиждень - чисельник ", show_alert=True)
     elif week_number % 2 != 0:
-        await query.answer(text="Цей тиждень - чисельник 🫡", show_alert=True)
+        await query.answer(text="Цей тиждень - 🫡знаменник 🫡", show_alert=True)
 
 
 @router.callback_query(F.data == "Розклад студ. 🧑‍🎓")
