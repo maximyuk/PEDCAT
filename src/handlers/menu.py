@@ -70,7 +70,7 @@ async def about_bot(query: types.CallbackQuery) -> None:
         f"🤖 БОТ ВПФК ПЕДКІТ\n"
         f"🆙 Версія : 3.0.1\n"
         f"👨‍💻 Code contributors: <a href='https://t.me/salkooua'>Salo</a> <a href='https://t.me/maximyuk07'>Bodya</a>\n"
-        f"🎨 Дизайн ави: <a href='https://t.me/pupqwert'>Reloadddddd</a>\n\n"
+        f"🎨 Дизайн ави: <a href='https://t.me/krvnst1'>Nastya</a>\n\n"
         f"📅 Початок розробки : Січень 2023-го року\n\n"
         f"Бот створено для спрощення\n"
         f"виконання будь-яких речей,\n"
